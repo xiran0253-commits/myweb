@@ -1,1318 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>希然奶茶 — 每一杯都是今天的小确幸</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --cream: #FAF7F2;
-            --beige: #F0EBE3;
-            --milk-tea: #C4A882;
-            --coffee: #3D2B1F;
-            --coffee-light: #5C4A3A;
-            --matcha: #7A9E7E;
-            --fruit: #E8A55C;
-            --white: #FFFFFF;
-            --shadow: rgba(61, 43, 31, 0.08);
-            --shadow-lg: rgba(61, 43, 31, 0.15);
-            --nav-height: 72px;
-            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --font: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-
-        body {
-            font-family: var(--font);
-            background: var(--cream);
-            color: var(--coffee);
-            line-height: 1.7;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        img {
-            display: block;
-            max-width: 100%;
-        }
-
-        /* ── Navigation ── */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 clamp(24px, 5vw, 80px);
-            transition: background var(--transition), backdrop-filter var(--transition), box-shadow var(--transition);
-        }
-
-        .nav.scrolled {
-            background: rgba(250, 247, 242, 0.75);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 0 1px 0 rgba(61, 43, 31, 0.06);
-        }
-
-        .nav__logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: 0.08em;
-            color: var(--coffee);
-        }
-
-        .nav__logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--milk-tea);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: var(--white);
-        }
-
-        .nav__links {
-            display: flex;
-            align-items: center;
-            gap: clamp(20px, 3vw, 48px);
-            list-style: none;
-        }
-
-        .nav__links a {
-            font-size: 0.875rem;
-            font-weight: 400;
-            letter-spacing: 0.06em;
-            color: var(--coffee-light);
-            position: relative;
-            transition: color var(--transition);
-        }
-
-        .nav__links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--milk-tea);
-            transition: width var(--transition);
-        }
-
-        .nav__links a:hover {
-            color: var(--coffee);
-        }
-
-        .nav__links a:hover::after {
-            width: 100%;
-        }
-
-        .nav__toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            z-index: 1001;
-        }
-
-        .nav__toggle span {
-            display: block;
-            width: 24px;
-            height: 1.5px;
-            background: var(--coffee);
-            transition: transform var(--transition), opacity var(--transition);
-        }
-
-        .nav__toggle.active span:nth-child(1) {
-            transform: translateY(6.5px) rotate(45deg);
-        }
-
-        .nav__toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .nav__toggle.active span:nth-child(3) {
-            transform: translateY(-6.5px) rotate(-45deg);
-        }
-
-        /* ── Hero Banner ── */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .hero__bg {
-            position: absolute;
-            inset: 0;
-            background: url('images/hero.jpg') center/cover no-repeat;
-            transform: scale(1.05);
-            transition: transform 8s ease-out;
-        }
-
-        .hero.loaded .hero__bg {
-            transform: scale(1);
-        }
-
-        .hero__overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(250, 247, 242, 0.92) 0%,
-                rgba(250, 247, 242, 0.75) 40%,
-                rgba(250, 247, 242, 0.55) 100%
-            );
-        }
-
-        .hero__content {
-            position: relative;
-            z-index: 2;
-            max-width: 720px;
-            padding: calc(var(--nav-height) + 60px) clamp(24px, 5vw, 80px) 80px;
-            text-align: center;
-        }
-
-        .hero__title {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 300;
-            line-height: 1.25;
-            letter-spacing: 0.12em;
-            color: var(--coffee);
-            margin-bottom: 32px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s ease forwards 0.3s;
-        }
-
-        .hero__subtitle {
-            font-size: clamp(0.875rem, 1.5vw, 1rem);
-            font-weight: 300;
-            letter-spacing: 0.25em;
-            color: var(--coffee-light);
-            line-height: 2.2;
-            margin-bottom: 48px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s ease forwards 0.6s;
-        }
-
-        .hero__subtitle span {
-            display: inline-block;
-        }
-
-        .hero__subtitle span::after {
-            content: '·';
-            margin: 0 12px;
-            color: var(--milk-tea);
-        }
-
-        .hero__subtitle span:last-child::after {
-            content: none;
-        }
-
-        .hero__actions {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s ease forwards 0.9s;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 40px;
-            font-family: var(--font);
-            font-size: 0.875rem;
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            border: none;
-            cursor: pointer;
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn--primary {
-            background: var(--coffee);
-            color: var(--cream);
-        }
-
-        .btn--primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--milk-tea), var(--coffee));
-            opacity: 0;
-            transition: opacity var(--transition);
-        }
-
-        .btn--primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px var(--shadow-lg);
-        }
-
-        .btn--primary:hover::before {
-            opacity: 1;
-        }
-
-        .btn--primary span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn--outline {
-            background: transparent;
-            color: var(--coffee);
-            border: 1px solid var(--coffee);
-        }
-
-        .btn--outline:hover {
-            background: var(--coffee);
-            color: var(--cream);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px var(--shadow-lg);
-        }
-
-        /* ── Section Common ── */
-        section {
-            padding: clamp(80px, 12vw, 160px) clamp(24px, 5vw, 80px);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: clamp(48px, 8vw, 80px);
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--milk-tea);
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-            font-weight: 300;
-            letter-spacing: 0.1em;
-            color: var(--coffee);
-        }
-
-        .fade-in {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ── New Products ── */
-        .products {
-            background: var(--beige);
-        }
-
-        .products__grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: clamp(24px, 3vw, 40px);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .product-card {
-            background: var(--white);
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform var(--transition), box-shadow var(--transition);
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 48px var(--shadow-lg);
-        }
-
-        .product-card__image-wrap {
-            overflow: hidden;
-            aspect-ratio: 4/5;
-            position: relative;
-        }
-
-        .product-card__image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .product-card:hover .product-card__image {
-            transform: scale(1.08);
-        }
-
-        .product-card__tag {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 6px 14px;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            color: var(--white);
-        }
-
-        .product-card__tag--matcha {
-            background: var(--matcha);
-        }
-
-        .product-card__tag--fruit {
-            background: var(--fruit);
-        }
-
-        .product-card__tag--classic {
-            background: var(--milk-tea);
-        }
-
-        .product-card__body {
-            padding: 28px 24px 32px;
-        }
-
-        .product-card__name {
-            font-size: 1.25rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-        }
-
-        .product-card__price {
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: var(--milk-tea);
-            margin-bottom: 12px;
-        }
-
-        .product-card__price .currency {
-            font-size: 0.875rem;
-            margin-right: 2px;
-        }
-
-        .product-card__desc {
-            font-size: 0.875rem;
-            font-weight: 300;
-            color: var(--coffee-light);
-            letter-spacing: 0.04em;
-        }
-
-        /* ── Brand Story ── */
-        .story {
-            background: var(--cream);
-        }
-
-        .story__inner {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: clamp(40px, 6vw, 80px);
-            max-width: 1200px;
-            margin: 0 auto;
-            align-items: center;
-        }
-
-        .story__image-wrap {
-            overflow: hidden;
-            aspect-ratio: 4/5;
-        }
-
-        .story__image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.7s ease;
-        }
-
-        .story__image-wrap:hover .story__image {
-            transform: scale(1.04);
-        }
-
-        .story__content {
-            padding: 20px 0;
-        }
-
-        .story__text {
-            font-size: clamp(1.125rem, 2vw, 1.375rem);
-            font-weight: 300;
-            line-height: 2.2;
-            letter-spacing: 0.08em;
-            color: var(--coffee-light);
-        }
-
-        .story__text em {
-            font-style: normal;
-            color: var(--coffee);
-            font-weight: 400;
-        }
-
-        .story__divider {
-            width: 48px;
-            height: 1px;
-            background: var(--milk-tea);
-            margin: 32px 0;
-        }
-
-        /* ── Store ── */
-        .stores {
-            background: var(--beige);
-        }
-
-        .stores__list {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .store-card {
-            background: var(--white);
-            padding: 0;
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
-            gap: 0;
-            cursor: pointer;
-            transition: all var(--transition);
-            border: 1px solid transparent;
-            overflow: hidden;
-        }
-
-        .store-card__thumb {
-            width: clamp(120px, 28vw, 200px);
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .store-card__thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.7s ease;
-        }
-
-        .store-card:hover .store-card__thumb img {
-            transform: scale(1.06);
-        }
-
-        .store-card__body {
-            flex: 1;
-            padding: clamp(24px, 4vw, 48px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-        }
-
-        .store-card:hover {
-            border-color: var(--milk-tea);
-            transform: translateX(8px);
-            box-shadow: 0 16px 40px var(--shadow);
-        }
-
-        .store-card__info h3 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-        }
-
-        .store-card__info p {
-            font-size: 0.875rem;
-            color: var(--coffee-light);
-            letter-spacing: 0.04em;
-        }
-
-        .store-card__arrow {
-            width: 48px;
-            height: 48px;
-            border: 1px solid var(--milk-tea);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all var(--transition);
-        }
-
-        .store-card:hover .store-card__arrow {
-            background: var(--coffee);
-            border-color: var(--coffee);
-            color: var(--cream);
-        }
-
-        .store-card__arrow svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 1.5;
-        }
-
-        /* ── Stats / Numbers ── */
-        .stats {
-            background: var(--coffee);
-            padding: clamp(60px, 8vw, 100px) clamp(24px, 5vw, 80px);
-        }
-
-        .stats__grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 40px;
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .stat-item__number {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            background: linear-gradient(135deg, var(--cream), var(--milk-tea));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .stat-item__label {
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            color: rgba(250, 247, 242, 0.6);
-        }
-
-        /* ── Footer ── */
-        .footer {
-            background: var(--cream);
-            padding: clamp(60px, 8vw, 80px) clamp(24px, 5vw, 80px) 40px;
-            border-top: 1px solid rgba(61, 43, 31, 0.06);
-        }
-
-        .footer__inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .footer__logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 1.125rem;
-            letter-spacing: 0.08em;
-        }
-
-        .footer__logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--milk-tea);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            color: var(--white);
-        }
-
-        .footer__social {
-            display: flex;
-            gap: 24px;
-        }
-
-        .footer__social a {
-            width: 44px;
-            height: 44px;
-            border: 1px solid rgba(61, 43, 31, 0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition);
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-            color: var(--coffee-light);
-        }
-
-        .footer__social a:hover {
-            background: var(--coffee);
-            border-color: var(--coffee);
-            color: var(--cream);
-            transform: translateY(-3px);
-        }
-
-        .footer__copyright {
-            font-size: 0.75rem;
-            color: var(--coffee-light);
-            letter-spacing: 0.06em;
-            opacity: 0.6;
-        }
-
-        /* ── Modal ── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(61, 43, 31, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity var(--transition), visibility var(--transition);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background: var(--white);
-            max-width: 480px;
-            width: 100%;
-            padding: clamp(40px, 6vw, 56px);
-            position: relative;
-            transform: translateY(20px) scale(0.97);
-            transition: transform var(--transition);
-        }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal__close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: var(--beige);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background var(--transition);
-            font-size: 1.25rem;
-            color: var(--coffee-light);
-            line-height: 1;
-        }
-
-        .modal__close:hover {
-            background: var(--milk-tea);
-            color: var(--white);
-        }
-
-        .modal__title {
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 0.1em;
-            margin-bottom: 32px;
-            color: var(--coffee);
-        }
-
-        .modal__item {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--beige);
-        }
-
-        .modal__item:last-child {
-            border-bottom: none;
-        }
-
-        .modal__item-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--beige);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 1rem;
-        }
-
-        .modal__item-label {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            color: var(--milk-tea);
-            margin-bottom: 4px;
-        }
-
-        .modal__item-value {
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.04em;
-            color: var(--coffee);
-        }
-
-        .modal__item-value a {
-            transition: color var(--transition);
-        }
-
-        .modal__item-value a:hover {
-            color: var(--milk-tea);
-        }
-
-        /* ── Store Map Modal ── */
-        .map-modal .modal {
-            max-width: 560px;
-        }
-
-        .map-modal__address {
-            font-size: 0.9375rem;
-            color: var(--coffee-light);
-            line-height: 1.8;
-            margin-bottom: 24px;
-            letter-spacing: 0.04em;
-        }
-
-        .map-modal__image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            margin-bottom: 16px;
-        }
-
-        .map-modal__map {
-            width: 100%;
-            height: 48px;
-            background: var(--beige);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--coffee-light);
-            font-size: 0.875rem;
-            letter-spacing: 0.06em;
-        }
-
-        /* ── Animations ── */
-        @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Stagger children */
-        .products__grid .product-card:nth-child(1) { transition-delay: 0s; }
-        .products__grid .product-card:nth-child(2) { transition-delay: 0.15s; }
-        .products__grid .product-card:nth-child(3) { transition-delay: 0.3s; }
-
-        /* ── Responsive ── */
-        @media (max-width: 900px) {
-            .products__grid {
-                grid-template-columns: 1fr;
-                max-width: 420px;
-            }
-
-            .story__inner {
-                grid-template-columns: 1fr;
-            }
-
-            .story__image-wrap {
-                aspect-ratio: 16/10;
-            }
-
-            .stats__grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav__toggle {
-                display: flex;
-            }
-
-            .nav__links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: min(320px, 85vw);
-                height: 100vh;
-                background: rgba(250, 247, 242, 0.97);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                flex-direction: column;
-                justify-content: center;
-                gap: 36px;
-                transition: right var(--transition);
-                box-shadow: -4px 0 24px var(--shadow);
-            }
-
-            .nav__links.open {
-                right: 0;
-            }
-
-            .nav__links a {
-                font-size: 1rem;
-            }
-
-            .hero__subtitle span {
-                display: block;
-            }
-
-            .hero__subtitle span::after {
-                content: none;
-            }
-
-            .store-card {
-                flex-direction: column;
-            }
-
-            .store-card__thumb {
-                width: 100%;
-                height: 180px;
-            }
-
-            .store-card__body {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .store-card:hover {
-                transform: translateY(-4px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero__actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .stats__grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 32px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Navigation -->
-    <nav class="nav" id="nav">
-        <a href="#" class="nav__logo">
-            <span class="nav__logo-icon">希</span>
-            希然奶茶
-        </a>
-        <button class="nav__toggle" id="navToggle" aria-label="菜单">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <ul class="nav__links" id="navLinks">
-            <li><a href="#home">首页</a></li>
-            <li><a href="#products">新品</a></li>
-            <li><a href="#menu">菜单</a></li>
-            <li><a href="#story">品牌故事</a></li>
-            <li><a href="#stores">门店</a></li>
-            <li><a href="#" id="contactBtn">联系我们</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Banner -->
-    <section class="hero" id="home">
-        <div class="hero__bg"></div>
-        <div class="hero__overlay"></div>
-        <div class="hero__content">
-            <h1 class="hero__title">每一杯<br>都是今天的小确幸</h1>
-            <p class="hero__subtitle">
-                <span>精选茶叶</span>
-                <span>新鲜水果</span>
-                <span>现萃现做</span>
-                <span>给你一杯真正的好奶茶</span>
-            </p>
-            <div class="hero__actions">
-                <button class="btn btn--primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-                    <span>立即点单</span>
-                </button>
-                <button class="btn btn--outline" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
-                    查看菜单
-                </button>
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>茶屿 CHAYU | 手作奶茶店</title>
+    <link rel="stylesheet" href="./styles.css?v=2" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="主导航">
+      <a class="brand" href="#home" aria-label="茶屿首页">
+        <span class="brand-mark">茶</span>
+        <span>
+          <strong>茶屿</strong>
+          <small>CHAYU</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="页面导航">
+        <a href="#menu">菜单</a>
+        <a href="#custom">定制</a>
+        <a href="#stores">门店</a>
+      </nav>
+      <button class="cart-button" id="cartToggle" type="button" aria-label="打开购物袋">
+        <span aria-hidden="true">□</span>
+        <span id="cartCount">0</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-label="茶屿手作奶茶">
+        <img class="hero-bg" src="./assets/hero-milk-tea.png" alt="手作奶茶与茶饮原料" />
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow">新鲜茶底 · 当日鲜奶 · 小料现煮</p>
+          <h1>茶屿 CHAYU</h1>
+          <p class="hero-copy">一间把茶香、奶感和甜度都认真调好的城市奶茶店。</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#menu">查看菜单</a>
+            <a class="secondary-action" href="#custom">选择甜度</a>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- New Products -->
-    <section class="products" id="products">
-        <div class="section-header fade-in">
-            <p class="section-label">New Arrivals</p>
-            <h2 class="section-title">新品推荐</h2>
+      <section class="quick-strip" aria-label="今日亮点">
+        <div>
+          <strong>18 分钟</strong>
+          <span>平均出杯</span>
         </div>
-        <div class="products__grid">
-            <article class="product-card fade-in">
-                <div class="product-card__image-wrap">
-                    <img class="product-card__image"
-                        src="images/grape.jpg"
-                        alt="芝士葡萄" loading="lazy">
-                    <span class="product-card__tag product-card__tag--fruit">水果系列</span>
-                </div>
-                <div class="product-card__body">
-                    <h3 class="product-card__name">芝士葡萄</h3>
-                    <p class="product-card__price"><span class="currency">¥</span>22</p>
-                    <p class="product-card__desc">新鲜葡萄搭配芝士奶盖。</p>
-                </div>
-            </article>
-            <article class="product-card fade-in">
-                <div class="product-card__image-wrap">
-                    <img class="product-card__image"
-                        src="images/matcha.jpg"
-                        alt="抹茶牛乳" loading="lazy">
-                    <span class="product-card__tag product-card__tag--matcha">抹茶系列</span>
-                </div>
-                <div class="product-card__body">
-                    <h3 class="product-card__name">抹茶牛乳</h3>
-                    <p class="product-card__price"><span class="currency">¥</span>20</p>
-                    <p class="product-card__desc">宇治抹茶搭配鲜牛乳。</p>
-                </div>
-            </article>
-            <article class="product-card fade-in">
-                <div class="product-card__image-wrap">
-                    <img class="product-card__image"
-                        src="images/mango.jpg"
-                        alt="杨枝甘露" loading="lazy">
-                    <span class="product-card__tag product-card__tag--classic">经典系列</span>
-                </div>
-                <div class="product-card__body">
-                    <h3 class="product-card__name">杨枝甘露</h3>
-                    <p class="product-card__price"><span class="currency">¥</span>24</p>
-                    <p class="product-card__desc">芒果、西柚、西米完美融合。</p>
-                </div>
-            </article>
+        <div>
+          <strong>7 款</strong>
+          <span>低糖推荐</span>
         </div>
-    </section>
-
-    <!-- Menu Anchor Section -->
-    <section class="stats" id="menu">
-        <div class="stats__grid">
-            <div class="stat-item fade-in">
-                <div class="stat-item__number" data-target="30">0</div>
-                <div class="stat-item__label">精选饮品</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-item__number" data-target="12">0</div>
-                <div class="stat-item__label">茶底种类</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-item__number" data-target="8">0</div>
-                <div class="stat-item__label">新鲜水果</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-item__number" data-target="100">0</div>
-                <div class="stat-item__label">% 真材实料</div>
-            </div>
+        <div>
+          <strong>22:30</strong>
+          <span>营业至</span>
         </div>
-    </section>
+      </section>
 
-    <!-- Brand Story -->
-    <section class="story" id="story">
-        <div class="section-header fade-in">
-            <p class="section-label">Our Story</p>
-            <h2 class="section-title">品牌故事</h2>
+      <section class="menu-section" id="menu">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Menu</p>
+            <h2>今日茶单</h2>
+          </div>
+          <div class="filter-tabs" role="tablist" aria-label="饮品分类">
+            <button class="filter active" type="button" data-filter="all">全部</button>
+            <button class="filter" type="button" data-filter="milk">奶茶</button>
+            <button class="filter" type="button" data-filter="fruit">果茶</button>
+            <button class="filter" type="button" data-filter="light">轻乳</button>
+          </div>
         </div>
-        <div class="story__inner">
-            <div class="story__image-wrap fade-in">
-                <img class="story__image"
-                    src="images/story.jpg"
-                    alt="品牌故事" loading="lazy">
-            </div>
-            <div class="story__content fade-in">
-                <div class="story__divider"></div>
-                <p class="story__text">
-                    我们坚持<em>每天现煮茶底</em>。<br><br>
-                    坚持<em>真水果</em>。<br><br>
-                    坚持<em>好牛奶</em>。<br><br>
-                    希望每一杯奶茶，<br>
-                    都值得等待。
-                </p>
-            </div>
+
+        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="custom-section" id="custom">
+        <div class="custom-copy">
+          <p class="eyebrow">Customize</p>
+          <h2>把这一杯调成你的口味</h2>
+          <p>选择冰量、甜度和小料，系统会同步推荐更适合的饮品。门店点单、外带自取和团购下午茶都可以用这套配置。</p>
         </div>
-    </section>
+        <form class="custom-panel" id="customForm">
+          <label>
+            甜度
+            <select id="sweetness">
+              <option>三分糖</option>
+              <option selected>五分糖</option>
+              <option>七分糖</option>
+              <option>全糖</option>
+            </select>
+          </label>
+          <label>
+            冰量
+            <select id="ice">
+              <option>去冰</option>
+              <option selected>少冰</option>
+              <option>正常冰</option>
+              <option>热饮</option>
+            </select>
+          </label>
+          <fieldset>
+            <legend>加料</legend>
+            <label><input type="checkbox" value="黑糖珍珠" checked /> 黑糖珍珠</label>
+            <label><input type="checkbox" value="椰果" /> 椰果</label>
+            <label><input type="checkbox" value="茶冻" /> 茶冻</label>
+          </fieldset>
+          <output id="customOutput">推荐：岩盐乌龙鲜奶茶 · 五分糖 · 少冰 · 黑糖珍珠</output>
+        </form>
+      </section>
 
-    <!-- Stores -->
-    <section class="stores" id="stores">
-        <div class="section-header fade-in">
-            <p class="section-label">Stores</p>
-            <h2 class="section-title">门店展示</h2>
+      <section class="store-section" id="stores">
+        <div>
+          <p class="eyebrow">Stores</p>
+          <h2>附近门店</h2>
         </div>
-        <div class="stores__list">
-            <div class="store-card fade-in" id="storeCard">
-                <div class="store-card__thumb">
-                    <img src="images/store.jpg" alt="巴中万达广场门店" loading="lazy">
-                </div>
-                <div class="store-card__body">
-                    <div class="store-card__info">
-                        <h3>巴中万达广场</h3>
-                        <p>四川省巴中市巴州区万达广场 1F-108</p>
-                    </div>
-                    <div class="store-card__arrow">
-                        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                    </div>
-                </div>
-            </div>
+        <div class="store-list">
+          <article>
+            <strong>茶屿 · 梧桐路店</strong>
+            <span>梧桐路 88 号 A 座 1F</span>
+            <small>今日 10:00 - 22:30</small>
+          </article>
+          <article>
+            <strong>茶屿 · 河岸广场店</strong>
+            <span>河岸广场 B1-12</span>
+            <small>今日 10:30 - 22:00</small>
+          </article>
+          <article>
+            <strong>茶屿 · 云顶中心店</strong>
+            <span>云顶中心 L2-06</span>
+            <small>今日 09:30 - 22:30</small>
+          </article>
         </div>
-    </section>
+      </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer__inner">
-            <div class="footer__logo">
-                <span class="footer__logo-icon">希</span>
-                希然奶茶
-            </div>
-            <div class="footer__social">
-                <a href="#" title="微信公众号">微信</a>
-                <a href="#" title="小红书">小红书</a>
-                <a href="#" title="抖音">抖音</a>
-            </div>
-            <p class="footer__copyright">&copy; 2026 希然奶茶 XiRan Tea. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <aside class="cart-drawer" id="cartDrawer" aria-label="购物袋" aria-hidden="true">
+      <div class="cart-head">
+        <strong>购物袋</strong>
+        <button id="cartClose" type="button" aria-label="关闭购物袋">×</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p class="empty">还没有加入饮品。</p>
+      </div>
+      <div class="cart-total">
+        <span>合计</span>
+        <strong id="cartTotal">¥0</strong>
+      </div>
+      <button class="checkout" type="button">到店自取</button>
+    </aside>
+    <div class="scrim" id="scrim"></div>
 
-    <!-- Contact Modal -->
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal">
-            <button class="modal__close" id="contactClose">&times;</button>
-            <h3 class="modal__title">联系我们</h3>
-            <div class="modal__item">
-                <div class="modal__item-icon">📞</div>
-                <div>
-                    <p class="modal__item-label">联系电话</p>
-                    <p class="modal__item-value"><a href="tel:4008888888">400-888-8888</a></p>
-                </div>
-            </div>
-            <div class="modal__item">
-                <div class="modal__item-icon">✉️</div>
-                <div>
-                    <p class="modal__item-label">邮箱</p>
-                    <p class="modal__item-value"><a href="mailto:tea@example.com">tea@example.com</a></p>
-                </div>
-            </div>
-            <div class="modal__item">
-                <div class="modal__item-icon">🕐</div>
-                <div>
-                    <p class="modal__item-label">营业时间</p>
-                    <p class="modal__item-value">10:00 - 22:00</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Store Map Modal -->
-    <div class="modal-overlay map-modal" id="storeModal">
-        <div class="modal">
-            <button class="modal__close" id="storeClose">&times;</button>
-            <h3 class="modal__title">巴中万达广场</h3>
-            <img class="map-modal__image" src="images/store.jpg" alt="巴中万达广场门店">
-            <p class="map-modal__address">
-                四川省巴中市巴州区万达广场 1F-108<br>
-                营业时间：10:00 - 22:00
-            </p>
-            <div class="map-modal__map">
-                <a href="https://maps.baidu.com/search/巴中万达广场" target="_blank" rel="noopener"
-                    style="color: var(--milk-tea); letter-spacing: 0.1em;">
-                    点击查看地图导航 →
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        /* ── Nav scroll glass effect ── */
-        const nav = document.getElementById('nav');
-        const hero = document.querySelector('.hero');
-
-        window.addEventListener('scroll', () => {
-            nav.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        hero.classList.add('loaded');
-
-        /* ── Mobile menu ── */
-        const navToggle = document.getElementById('navToggle');
-        const navLinks = document.getElementById('navLinks');
-
-        navToggle.addEventListener('click', () => {
-            navToggle.classList.toggle('active');
-            navLinks.classList.toggle('open');
-            document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navToggle.classList.remove('active');
-                navLinks.classList.remove('open');
-                document.body.style.overflow = '';
-            });
-        });
-
-        /* ── Scroll fade-in ── */
-        const fadeEls = document.querySelectorAll('.fade-in');
-        const fadeObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-        fadeEls.forEach(el => fadeObserver.observe(el));
-
-        /* ── Number count-up with gradient ── */
-        const statNumbers = document.querySelectorAll('.stat-item__number');
-        let statsAnimated = false;
-
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !statsAnimated) {
-                    statsAnimated = true;
-                    statNumbers.forEach(num => {
-                        const target = parseInt(num.dataset.target, 10);
-                        const duration = 2000;
-                        const start = performance.now();
-
-                        function update(now) {
-                            const elapsed = now - start;
-                            const progress = Math.min(elapsed / duration, 1);
-                            const eased = 1 - Math.pow(1 - progress, 3);
-                            num.textContent = Math.round(target * eased);
-                            if (progress < 1) requestAnimationFrame(update);
-                        }
-
-                        requestAnimationFrame(update);
-                    });
-                }
-            });
-        }, { threshold: 0.3 });
-
-        const statsSection = document.getElementById('menu');
-        if (statsSection) statsObserver.observe(statsSection);
-
-        /* ── Contact modal ── */
-        const contactModal = document.getElementById('contactModal');
-        const contactBtn = document.getElementById('contactBtn');
-        const contactClose = document.getElementById('contactClose');
-
-        contactBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            contactModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-
-        contactClose.addEventListener('click', closeContactModal);
-        contactModal.addEventListener('click', (e) => {
-            if (e.target === contactModal) closeContactModal();
-        });
-
-        function closeContactModal() {
-            contactModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        /* ── Store modal ── */
-        const storeModal = document.getElementById('storeModal');
-        const storeCard = document.getElementById('storeCard');
-        const storeClose = document.getElementById('storeClose');
-
-        storeCard.addEventListener('click', () => {
-            storeModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-
-        storeClose.addEventListener('click', closeStoreModal);
-        storeModal.addEventListener('click', (e) => {
-            if (e.target === storeModal) closeStoreModal();
-        });
-
-        function closeStoreModal() {
-            storeModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        /* ── Escape key closes modals ── */
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeContactModal();
-                closeStoreModal();
-            }
-        });
-
-        /* ── Smooth active nav highlight ── */
-        const sections = document.querySelectorAll('section[id]');
-        const navItems = navLinks.querySelectorAll('a[href^="#"]:not(#contactBtn)');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const top = section.offsetTop - 100;
-                if (window.scrollY >= top) current = section.getAttribute('id');
-            });
-            navItems.forEach(item => {
-                item.style.color = item.getAttribute('href') === '#' + current
-                    ? 'var(--coffee)' : '';
-            });
-        });
-    </script>
-
-</body>
-
+    <script src="./script.js?v=2"></script>
+  </body>
 </html>
