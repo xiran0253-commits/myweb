@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>茶屿 CHAYU | 手作奶茶店</title>
+    <link rel="stylesheet" href="./styles.css?v=2" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="主导航">
+      <a class="brand" href="#home" aria-label="茶屿首页">
+        <span class="brand-mark">茶</span>
+        <span>
+          <strong>茶屿</strong>
+          <small>CHAYU</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="页面导航">
+        <a href="#menu">菜单</a>
+        <a href="#custom">定制</a>
+        <a href="#stores">门店</a>
+      </nav>
+      <button class="cart-button" id="cartToggle" type="button" aria-label="打开购物袋">
+        <span aria-hidden="true">□</span>
+        <span id="cartCount">0</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-label="茶屿手作奶茶">
+        <img class="hero-bg" src="./assets/hero-milk-tea.png" alt="手作奶茶与茶饮原料" />
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow">新鲜茶底 · 当日鲜奶 · 小料现煮</p>
+          <h1>茶屿 CHAYU</h1>
+          <p class="hero-copy">一间把茶香、奶感和甜度都认真调好的城市奶茶店。</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#menu">查看菜单</a>
+            <a class="secondary-action" href="#custom">选择甜度</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-strip" aria-label="今日亮点">
+        <div>
+          <strong>18 分钟</strong>
+          <span>平均出杯</span>
+        </div>
+        <div>
+          <strong>7 款</strong>
+          <span>低糖推荐</span>
+        </div>
+        <div>
+          <strong>22:30</strong>
+          <span>营业至</span>
+        </div>
+      </section>
+
+      <section class="menu-section" id="menu">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Menu</p>
+            <h2>今日茶单</h2>
+          </div>
+          <div class="filter-tabs" role="tablist" aria-label="饮品分类">
+            <button class="filter active" type="button" data-filter="all">全部</button>
+            <button class="filter" type="button" data-filter="milk">奶茶</button>
+            <button class="filter" type="button" data-filter="fruit">果茶</button>
+            <button class="filter" type="button" data-filter="light">轻乳</button>
+          </div>
+        </div>
+
+        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="custom-section" id="custom">
+        <div class="custom-copy">
+          <p class="eyebrow">Customize</p>
+          <h2>把这一杯调成你的口味</h2>
+          <p>选择冰量、甜度和小料，系统会同步推荐更适合的饮品。门店点单、外带自取和团购下午茶都可以用这套配置。</p>
+        </div>
+        <form class="custom-panel" id="customForm">
+          <label>
+            甜度
+            <select id="sweetness">
+              <option>三分糖</option>
+              <option selected>五分糖</option>
+              <option>七分糖</option>
+              <option>全糖</option>
+            </select>
+          </label>
+          <label>
+            冰量
+            <select id="ice">
+              <option>去冰</option>
+              <option selected>少冰</option>
+              <option>正常冰</option>
+              <option>热饮</option>
+            </select>
+          </label>
+          <fieldset>
+            <legend>加料</legend>
+            <label><input type="checkbox" value="黑糖珍珠" checked /> 黑糖珍珠</label>
+            <label><input type="checkbox" value="椰果" /> 椰果</label>
+            <label><input type="checkbox" value="茶冻" /> 茶冻</label>
+          </fieldset>
+          <output id="customOutput">推荐：岩盐乌龙鲜奶茶 · 五分糖 · 少冰 · 黑糖珍珠</output>
+        </form>
+      </section>
+
+      <section class="store-section" id="stores">
+        <div>
+          <p class="eyebrow">Stores</p>
+          <h2>附近门店</h2>
+        </div>
+        <div class="store-list">
+          <article>
+            <strong>茶屿 · 梧桐路店</strong>
+            <span>梧桐路 88 号 A 座 1F</span>
+            <small>今日 10:00 - 22:30</small>
+          </article>
+          <article>
+            <strong>茶屿 · 河岸广场店</strong>
+            <span>河岸广场 B1-12</span>
+            <small>今日 10:30 - 22:00</small>
+          </article>
+          <article>
+            <strong>茶屿 · 云顶中心店</strong>
+            <span>云顶中心 L2-06</span>
+            <small>今日 09:30 - 22:30</small>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside class="cart-drawer" id="cartDrawer" aria-label="购物袋" aria-hidden="true">
+      <div class="cart-head">
+        <strong>购物袋</strong>
+        <button id="cartClose" type="button" aria-label="关闭购物袋">×</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p class="empty">还没有加入饮品。</p>
+      </div>
+      <div class="cart-total">
+        <span>合计</span>
+        <strong id="cartTotal">¥0</strong>
+      </div>
+      <button class="checkout" type="button">到店自取</button>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <script src="./script.js?v=2"></script>
+  </body>
+</html>
